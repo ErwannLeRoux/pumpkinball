@@ -46,8 +46,8 @@ export default {
 div {
   background-size: cover;
   background-image: url("../../../assets/left.png");
-  width: 100px;
-  height: 100px;
+  width: 60px;
+  height: 60px;
   z-index: 2;
   position: absolute;
 }

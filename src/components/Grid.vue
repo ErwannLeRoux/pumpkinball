@@ -1,19 +1,21 @@
 <template>
-  <div class="game-grid">
-
-
-    <div class="game-cell" v-for="cell in grid" :key="cell.value">
-      <component v-if="cell.move" :hasX=cell.x :hasY=cell.y :is="cell.move" :component-type="cell.value" @move-event="move"></component>
-      <component v-else :hasX=cell.x :hasY=cell.y :is="cell.value"></component>
-    </div>
-
-
-    <button v-if="allowedLeft" v-on:click='move("hasWeast")'>Left</button>
-    <button v-if="allowedRight" v-on:click='move("hasEast")'>Right</button>
-    <button v-if="allowedTop" v-on:click='move("hasNorth")'>Top</button>
-    <button v-if="allowedBottom" v-on:click='move("hasSouth")'>Bottom</button>
-    <button v-on:click='reset(2)'>RESET</button>
+  <h1 class="game-title">Pumpkin'ball</h1>
+  <h2>Choisis le nombre d'hommes citrouilles !</h2>
+  <div class="input-container">
+    <input v-model="nb" type="number" id="man-number" name="man-number" min="1" max="4">
+    <button v-on:click='reset(this.nb)'><span class="go-button">GO !</span></button>
   </div>
+
+  <main>
+    <div class="bats"></div>
+    <div class="game-grid">
+      <div class="game-cell" v-for="(cell, index) in grid" :key="index">
+        <component v-if="cell.move" :hasX=cell.x :hasY=cell.y :is="cell.move" :component-type="cell.value" @move-event="move"></component>
+        <component v-else :hasX=cell.x :hasY=cell.y :is="cell.value"></component>
+      </div>
+    </div>
+    <div class="bats"></div>
+  </main>
 </template>
 
 <script>
@@ -39,6 +41,7 @@
     data: function () {
       return {
         grid: [],
+        nb: 1,
         conn: null,
         allowedTop: false,
         allowedBottom: false,
@@ -121,6 +124,7 @@
 
       },
       update: function () {
+
         this.execute(
             `PREFIX : <http://snowman/antoine/erwann#>
            SELECT DISTINCT *
@@ -138,7 +142,6 @@
             } ORDER BY ?c`, true)
             .then(data => {
               this.grid = []
-              console.log(this.grid)
               data.forEach(item => {
                 this.grid.push({
                   value: item.concept.value.split("#")[1],
@@ -196,13 +199,68 @@
 </script>
 
 <style scoped>
-  .game-grid {
-    display: grid;
-    grid-template-columns: repeat(10, 100px);
-    grid-template-rows: repeat(10, 100px) ;
+  @font-face {
+    font-family: 'Creepster';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Creepster'), local('Creepster-Regular'), url(https://fonts.gstatic.com/s/creepster/v9/AlZy_zVUqJz4yMrniH4Rcn38.ttf) format('truetype');
+  }
+  @font-face {
+    font-family: 'Lato';
+    font-style: normal;
+    font-weight: 900;
+    src: local('Lato Black'), local('Lato-Black'), url(https://fonts.gstatic.com/s/lato/v17/S6u9w4BMUTPHh50XSwiPHA.ttf) format('truetype');
   }
 
-  .game-cell {
 
+  .game-grid {
+    display: grid;
+    grid-template-columns: repeat(10, 60px);
+    grid-template-rows: repeat(10, 60px) ;
+    justify-content: center;
+    margin: 0 50px;
+  }
+
+  h1, h2, .go-button {
+    background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgMSAxIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIj48bGluZWFyR3JhZGllbnQgaWQ9Imxlc3NoYXQtZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiMyYzNlNTAiIHN0b3Atb3BhY2l0eT0iMSIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzhlNDRhZCIgc3RvcC1vcGFjaXR5PSIxIi8+PC9saW5lYXJHcmFkaWVudD48cmVjdCB4PSIwIiB5PSIwIiB3aWR0aD0iMSIgaGVpZ2h0PSIxIiBmaWxsPSJ1cmwoI2xlc3NoYXQtZ2VuZXJhdGVkKSIgLz48L3N2Zz4=);
+    background-image: -webkit-linear-gradient(top, #2c3e50 0%, #8e44ad 100%);
+    background-image: -moz-linear-gradient(top, #2c3e50 0%, #8e44ad 100%);
+    background-image: -o-linear-gradient(top, #2c3e50 0%, #8e44ad 100%);
+    background-image: linear-gradient(to bottom, #2c3e50 0%, #8e44ad 100%);
+    -webkit-text-fill-color: transparent;
+    -webkit-background-clip: text;
+    margin: 20px auto;
+    text-align: center;
+    color: #fff;
+  }
+
+  main {
+    display: flex;
+    justify-content: center;
+  }
+
+  h2 {
+    font: 100 30px Creepster, Helvetica, sans-serif;
+  }
+
+  h1 {
+    font: 100 120px Creepster, Helvetica, sans-serif;
+  }
+
+  .go-button {
+    font: 100 20px Creepster, Helvetica, sans-serif;
+  }
+
+  .bats {
+    margin-top: 30px;
+    height: 550px;
+    width: 200px;
+    background-image: url("../assets/bats.png");
+  }
+
+  .input-container {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 20px;
   }
 </style>

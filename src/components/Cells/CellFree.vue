@@ -32,8 +32,8 @@
         background-image: url("../../assets/dirt.jpg");
         text-align: center;
         font-weight: bold;
-        width: 100px;
-        height: 100px;
+        width: 60px;
+        height: 60px;
         z-index: 1;
     }
 </style>
