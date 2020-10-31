@@ -1,6 +1,7 @@
 <template>
   <h1 class="game-title">Pumpkin'ball</h1>
-  <h2>Choisis le nombre d'hommes citrouilles !</h2>
+  <h2 class="choose-number">Choisis le nombre d'hommes citrouilles !</h2>
+  <h2 class="success-message" v-if="over">Bravo vous avez réussi !</h2>
   <div class="input-container">
     <input v-model="nb" type="number" id="man-number" name="man-number" min="1" max="4">
     <button v-on:click='reset(this.nb)'><span class="go-button">GO !</span></button>
@@ -42,6 +43,7 @@
       return {
         grid: [],
         nb: 1,
+        over: false,
         conn: null,
         allowedTop: false,
         allowedBottom: false,
@@ -66,6 +68,7 @@
     },
     methods: {
       reset: function (nbSnowman) {
+        this.over = false
         let ClearQueryString = `
         PREFIX : <http://snowman/antoine/erwann#>
         DELETE{
@@ -124,7 +127,6 @@
 
       },
       update: function () {
-
         this.execute(
             `PREFIX : <http://snowman/antoine/erwann#>
            SELECT DISTINCT *
@@ -159,6 +161,7 @@
         this.$options.components[compType].methods.move(compType, direction, this.execute).then(() => {
           this.$options.components["CellPlayer"].methods.move(compType, direction, this.execute).then(() => {
             this.update()
+            this.checkIfOver()
           })
         })
       },
@@ -185,6 +188,26 @@
           })
         })
       },
+      checkIfOver: function() {
+        this.execute(
+          `PREFIX : <http://snowman/antoine/erwann#>
+          PREFIX swrl: <http://www.semanticweb.org/21504712/ontologies/2020/9/jouer#>
+
+          ASK
+          WHERE{
+              ?cell a ?type
+              filter(
+                  ?type = :SmallSnowball ||
+                  ?type = :MediumSnowball ||
+                  ?type = :BigSnowball ||
+                  ?type = :SmallAndBig ||
+                  ?type = :SmallAndMedium ||
+                  ?type = :MediumAndBig
+              )
+          }`, false).then(data =>  {
+            this.over = !data
+          })
+        }
     },
     mounted() {
       this.conn = new Connection({
@@ -231,7 +254,11 @@
     -webkit-background-clip: text;
     margin: 20px auto;
     text-align: center;
-    color: #fff;
+  }
+
+  .success-message {
+    font: 100 60px Creepster, Helvetica, sans-serif;
+
   }
 
   main {
