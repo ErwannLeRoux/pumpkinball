@@ -127,8 +127,9 @@
 
       },
       update: function () {
-        this.execute(
-            `PREFIX : <http://snowman/antoine/erwann#>
+        return new Promise((resolve) => {
+          this.execute(
+                  `PREFIX : <http://snowman/antoine/erwann#>
            SELECT DISTINCT *
             WHERE {
                 ?c a ?concept.
@@ -152,7 +153,9 @@
                   y: item.y.value
                 })
               })
+              resolve();
             });
+        })
 
       },
       move: function (params) {
@@ -215,7 +218,7 @@
         password: 'admin',
         endpoint: 'http://192.168.56.103:5820',
       });
-      this.update()
+      this.update().then(() => this.reset(this.nb))
     }
   }
 
