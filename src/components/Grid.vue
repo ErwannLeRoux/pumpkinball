@@ -261,7 +261,10 @@
 
   .success-message {
     font: 100 60px Creepster, Helvetica, sans-serif;
-
+    background-image: -webkit-linear-gradient(top, red 0%, #8e44ad 100%);
+    background-image: -moz-linear-gradient(top, red 0%, #8e44ad 100%);
+    background-image: -o-linear-gradient(top, red 0%, #8e44ad 100%);
+    background-image: linear-gradient(to bottom, red 0%, #8e44ad 100%);
   }
 
   main {
